@@ -6,7 +6,7 @@
 #------------------------------------------------------------------------------
 EXEC = hyperscan.so
 
-CFLAGS = -g -O0 -Wall -Werror -Iinc -I/usr/include/lua5.3 -fPIC
+CFLAGS = -g -O0 -Wall -Werror -Iinc -I/usr/include/lua5.1 -fPIC
 LDFLAGS = ./lib/libhs.a -shared
 CC = g++
 

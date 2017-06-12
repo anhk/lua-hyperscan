@@ -32,11 +32,12 @@ typedef struct _hs_s {
 static int hyperscan_new(lua_State *L)
 {
     hs_t *hs = (hs_t *) lua_newuserdata(L, sizeof(hs_t));
-    luaL_getmetatable(L, "hyperscan");
-    lua_setmetatable(L, -2);
 
     hs->magic = MAGIC;
     hs->db = NULL;
+
+    luaL_getmetatable(L, "hyperscan");
+    lua_setmetatable(L, -2);
 
     dd("malloc hs: %p", hs);
     return 1;
@@ -202,12 +203,22 @@ static const struct luaL_Reg hyperscan_reg [] = {
 extern "C" int luaopen_hyperscan(lua_State *L)
 {
     luaL_newmetatable(L, "hyperscan");
+#if LUA_VERSION_NUM >= 502
+    luaL_setfuncs(L, hyperscan_reg, 0);
+#else
+    luaL_register(L, NULL, hyperscan_reg);
+#endif
 
+    lua_pushliteral(L, "__metatable");
+    lua_pushliteral(L, "must not access this metatable");
+    lua_settable(L, -3);
+
+#if 1
     lua_pushliteral(L, "__index");
     lua_pushvalue(L, -2);
     lua_rawset(L, -3);
+#endif
 
-    luaL_setfuncs(L, hyperscan_reg, 0);
     return 1;
 }
 
