@@ -7,9 +7,11 @@
 #include <stdio.h>
 #include <string.h>
 
+extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
+}
 
 #define DEBUG_PRINT
 
