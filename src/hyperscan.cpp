@@ -213,11 +213,9 @@ extern "C" int luaopen_hyperscan(lua_State *L)
     lua_pushliteral(L, "must not access this metatable");
     lua_settable(L, -3);
 
-#if 1
     lua_pushliteral(L, "__index");
     lua_pushvalue(L, -2);
     lua_rawset(L, -3);
-#endif
 
     return 1;
 }
