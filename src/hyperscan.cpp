@@ -76,7 +76,7 @@ static int hyperscan_compile(lua_State *L)
 
         patterns.push_back(value);
         ids.push_back(key);
-        flags.push_back(HS_FLAG_CASELESS);
+        flags.push_back(HS_FLAG_CASELESS|HS_FLAG_SOM_LEFTMOST);
 
         dd("%d: %s", key, value);
         lua_pop(L, 2);
