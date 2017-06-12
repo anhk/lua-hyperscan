@@ -6,6 +6,7 @@ local patterns = {
     ["3"] = "World",
     ["333"] = "bar",
     [1000] = "333",
+    [100000000] = "foo",
 }
 
 local hyperscan = require 'hyperscan'
@@ -18,6 +19,16 @@ if not ret then
 end
 
 local ret, err = h:match("Hello World! foobar, 45563248222333444")
+
+if ret and type(ret) == "table" then
+    for _, v in ipairs(ret) do
+        print("in lua: id=", tonumber(v))
+    end
+else
+    print("match failure.")
+end
+
+local ret, err = h:match("Test world 3boforbar3984")
 
 if ret and type(ret) == "table" then
     for _, v in ipairs(ret) do

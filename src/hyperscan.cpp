@@ -29,6 +29,7 @@ extern "C" {
 typedef struct _hs_s {
     unsigned int magic;
     hs_database_t *db;
+    hs_scratch_t *scratch;
 } hs_t;
 
 static int hyperscan_new(lua_State *L)
@@ -37,6 +38,7 @@ static int hyperscan_new(lua_State *L)
 
     hs->magic = MAGIC;
     hs->db = NULL;
+    hs->scratch = NULL;
 
     luaL_getmetatable(L, "hyperscan");
     lua_setmetatable(L, -2);
@@ -130,7 +132,6 @@ static int onMatch(unsigned int id, unsigned long long from, unsigned long long 
 static int hyperscan_match(lua_State *L)
 {
     hs_error_t err;
-    hs_scratch_t *scratch = NULL;
 
     std::vector<unsigned int> matchResult;
 
@@ -148,18 +149,19 @@ static int hyperscan_match(lua_State *L)
     dd("buff: %s, len: %lu", buff, len);
     dd("match hs: %p, hs->db: %p", hs, hs->db);
 
-    err = hs_alloc_scratch(hs->db, &scratch);
+
+    /** we call hs_alloc_scratch to
+     *  let hyperscan decides whether hs->scratch should be freed **/
+    err = hs_alloc_scratch(hs->db, &hs->scratch);
 
     if (err != HS_SUCCESS) {
         return luaL_error(L, "could not allocate scratch space.");
     }
 
-    err = hs_scan(hs->db, buff, len, 0, scratch, onMatch, &matchResult);
+    err = hs_scan(hs->db, buff, len, 0, hs->scratch, onMatch, &matchResult);
     if (err != HS_SUCCESS) {
         return luaL_error(L, "unable to scan.");
     }
-
-    hs_free_scratch(scratch);
 
     dd("match: %lu", matchResult.size());
 
