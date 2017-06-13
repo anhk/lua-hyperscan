@@ -166,7 +166,10 @@ static int hyperscan_match(lua_State *L)
     dd("match: %lu", matchResult.size());
 
     if (matchResult.size() <= 0) {
-        return luaL_error(L, "no match result.");
+        lua_pushnil(L);
+        lua_pushstring(L, "no match result.");
+        return 2;
+        //return luaL_error(L, "no match result.");
     }
 
     lua_createtable(L, matchResult.size(), 0);
