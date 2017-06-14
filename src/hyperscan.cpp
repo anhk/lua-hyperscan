@@ -13,7 +13,7 @@ extern "C" {
 #include <lualib.h>
 }
 
-#define DEBUG_PRINT
+//#define DEBUG_PRINT
 
 #ifndef DEBUG_PRINT
 #define dd(...)
@@ -113,6 +113,11 @@ static int hyperscan_compile(lua_State *L)
         return luaL_error(L, "compile patterns error.");
     }
 
+    err = hs_alloc_scratch(hs->db, &hs->scratch);
+
+    if (err != HS_SUCCESS) {
+        return luaL_error(L, "could not allocate scratch space.");
+    }
     lua_pushboolean(L, 1);
     return 1;
 }
@@ -152,11 +157,13 @@ static int hyperscan_match(lua_State *L)
 
     /** we call hs_alloc_scratch to
      *  let hyperscan decides whether hs->scratch should be freed **/
+#if 0
     err = hs_alloc_scratch(hs->db, &hs->scratch);
 
     if (err != HS_SUCCESS) {
         return luaL_error(L, "could not allocate scratch space.");
     }
+#endif
 
     err = hs_scan(hs->db, buff, len, 0, hs->scratch, onMatch, &matchResult);
     if (err != HS_SUCCESS) {
