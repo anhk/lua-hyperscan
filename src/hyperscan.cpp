@@ -114,8 +114,9 @@ static int hyperscan_compile(lua_State *L)
     }
 
     err = hs_alloc_scratch(hs->db, &hs->scratch);
-
     if (err != HS_SUCCESS) {
+        hs_free_database(hs->db);
+        hs->db = NULL;
         return luaL_error(L, "could not allocate scratch space.");
     }
     lua_pushboolean(L, 1);
